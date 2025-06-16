@@ -2,8 +2,8 @@ name: Selenium Tests Every 2 Min
 
 on:
   schedule:
-    - cron: "*/1 * * * *"   # Every 2 minutes
-  workflow_dispatch:        # Also allows manual run
+    - cron: "*/1 * * * *"  # GitHub allows only minimum every 5 minutes
+  workflow_dispatch:
 
 jobs:
   selenium-test:
@@ -18,25 +18,25 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install pytest selenium
 
-      - name: Install Chrome & WebDriver
+      - name: Install Chrome & Chromedriver
         run: |
           sudo apt update
-          sudo apt install -y wget unzip xvfb
+          sudo apt install -y wget unzip xvfb libxi6 libgconf-2-4 libnss3 libxss1 libappindicator1 libindicator7 fonts-liberation libatk-bridge2.0-0 libgtk-3-0
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome*.deb || sudo apt -f install -y
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          DRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json" | jq -r '.channels.Stable.version')
-          wget https://storage.googleapis.com/chrome-for-testing-public/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip
-          unzip chromedriver-linux64.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          LATEST=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+          wget https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/chromedriver
           sudo chmod +x /usr/local/bin/chromedriver
 
-      - name: Run tests headless
+      - name: Run tests using Xvfb
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
           pytest tests/
