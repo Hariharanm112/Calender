@@ -2,7 +2,7 @@ name: Selenium Tests Every 2 Min
 
 on:
   schedule:
-    - cron: "*/1 * * * *"  # GitHub allows only minimum every 5 minutes
+    - cron: "*/5 * * * *"  # GitHub only guarantees every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Install Chrome & Chromedriver
         run: |
           sudo apt update
-          sudo apt install -y wget unzip xvfb libxi6 libnss3 libxss1 libatk-bridge2.0-0 libgtk-3-0 libasound2 libgbm1
+          sudo apt install -y wget unzip xvfb libxi6 libnss3 libxss1 libatk-bridge2.0-0 libgtk-3-0 libgbm1 libasound2t64
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome*.deb || sudo apt -f install -y
           LATEST=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
