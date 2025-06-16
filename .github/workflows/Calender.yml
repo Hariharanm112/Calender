@@ -2,7 +2,7 @@ name: Selenium Tests Every 2 Min
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # GitHub only guarantees every 5 minutes
+    - cron: "*/1 * * * *"  # GitHub only guarantees every 5 minutes
   workflow_dispatch:
 
 jobs:
